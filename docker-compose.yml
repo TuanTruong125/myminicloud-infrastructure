@@ -1,36 +1,26 @@
-version: '3.8'
-
-networks:
-  cloud-net:
+networks: 
+  cloud-net: 
     name: cloud-net
-    driver: bridge
 
 services:
-
-  # 1. Web Frontend Server
+  # 1. Web Server
   web-frontend-server:
     build: ./web-frontend-server
+    image: 52300063_52300066_52300080/web:dev
     container_name: web-frontend-server
-    image: hotensv/web-frontend:latest
-    networks:
-      - cloud-net
-    ports:
-      - "8080:80"          # Web port theo lab
-    restart: unless-stopped
+    networks: [cloud-net]
+    ports: [ "8080:80" ]
 
-  # 2. Application Backend Server
+  # 2. Application Server
   application-backend-server:
     build: ./application-backend-server
+    image: 52300063_52300066_52300080/app:dev
     container_name: application-backend-server
-    image: hotensv/application-backend:latest
-    networks:
-      - cloud-net
-    ports:
-      - "8085:8081"        # App port theo lab (8085 ngoài, 8081 trong container)
+    networks: [cloud-net]
+    ports: [ "8085:8081" ]
     environment:
       OIDC_ISSUER: "http://authentication-identity-server:8080/realms/master"
       OIDC_AUDIENCE: "myapp"
-    restart: unless-stopped
 
   # 3. Relational Database Server
   relational-database-server:
@@ -41,13 +31,10 @@ services:
       MARIADB_DATABASE: minicloud
     volumes:
       - ./relational-database-server/init:/docker-entrypoint-initdb.d:ro
-    ports:
-      - "3306:3306"        # DB port
-    networks:
-      - cloud-net
-    restart: unless-stopped
+    ports: [ "3306:3306" ]
+    networks: [cloud-net]
 
-  # 4. Authentication Identity Server (Keycloak)
+  # 4. Authentication Server (Keycloak)
   authentication-identity-server:
     image: quay.io/keycloak/keycloak:latest
     container_name: authentication-identity-server
@@ -58,72 +45,60 @@ services:
       KC_HOSTNAME: "localhost"
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
-    ports:
-      - "8081:8080"        # Auth port theo lab
-    networks:
-      - cloud-net
+    ports: [ "8081:8080" ]
     restart: unless-stopped
+    networks: [cloud-net]
 
-  # 5. Object Storage Server (MinIO)
+  # 5. Object Storage (MinIO)
   object-storage-server:
     image: minio/minio
     container_name: object-storage-server
-    command: ["server", "/data", "--console-address", ":9001"]
+    command: ["server","/data","--console-address",":9001"]
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - ./object-storage-server/data:/data
-    ports:
+    ports: 
       - "9000:9000"
-      - "9001:9001"        # MinIO Console
-    networks:
-      - cloud-net
-    restart: unless-stopped
+      - "9001:9001"
+    networks: [cloud-net]
 
-  # 6. Internal DNS Server
+  # 6. Internal DNS Server (Bind9)
   internal-dns-server:
     image: internetsystemsconsortium/bind9:9.18
     container_name: internal-dns-server
-    ports:
-      - "1053:53/udp"      # DNS port theo lab
+    ports: [ "1053:53/udp" ]
     volumes:
       - ./internal-dns-server/named.conf.options:/etc/bind/named.conf.options:ro
       - ./internal-dns-server/named.conf.local:/etc/bind/named.conf.local:ro
       - ./internal-dns-server/db.cloud.local:/etc/bind/db.cloud.local:ro
-    networks:
-      - cloud-net
+    networks: [cloud-net]
 
   # 7. Monitoring - Node Exporter
   monitoring-node-exporter-server:
     image: prom/node-exporter:latest
     container_name: monitoring-node-exporter-server
-    ports:
-      - "9100:9100"        # NodeExporter port
-    networks:
-      - cloud-net
+    ports: [ "9100:9100" ]
+    networks: [cloud-net]
 
   # 8. Monitoring - Prometheus
   monitoring-prometheus-server:
     image: prom/prometheus:latest
     container_name: monitoring-prometheus-server
-    ports:
-      - "9090:9090"        # Prometheus port
+    ports: [ "9090:9090" ]
     volumes:
       - ./monitoring-prometheus-server/prometheus.yml:/etc/prometheus/prometheus.yml:ro
-    networks:
-      - cloud-net
+    networks: [cloud-net]
 
-  # 9. Monitoring - Grafana
+  # 9. Visualization - Grafana
   monitoring-grafana-dashboard-server:
     image: grafana/grafana:latest
     container_name: monitoring-grafana-dashboard-server
-    ports:
-      - "3000:3000"        # Grafana port
-    networks:
-      - cloud-net
+    ports: [ "3000:3000" ]
+    networks: [cloud-net]
 
-  # 10. API Gateway / Reverse Proxy
+  # 10. API Gateway / Reverse Proxy (Nginx)
   api-gateway-proxy-server:
     image: nginx:stable
     container_name: api-gateway-proxy-server
@@ -131,10 +106,8 @@ services:
       - web-frontend-server
       - application-backend-server
       - authentication-identity-server
-    ports:
-      - "80:80"            # Proxy chính (cổng 80)
+    ports: [ "80:80" ]
     volumes:
       - ./api-gateway-proxy-server/nginx.conf:/etc/nginx/nginx.conf:ro
-    networks:
-      - cloud-net
+    networks: [cloud-net]
     restart: unless-stopped
