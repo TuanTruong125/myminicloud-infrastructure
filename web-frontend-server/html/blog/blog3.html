@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Native & Docker | MyMiniCloud Tech Blog</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #050c1a;
+            --bg-card: #0d1b35;
+            --primary: #3b82f6;
+            --accent: #60a5fa;
+            --text-main: #e6f1ff;
+            --text-muted: #8892b0;
+            --border: #1e2d4d;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-body); 
+            color: var(--text-main); 
+            line-height: 1.8; 
+            overflow-x: hidden; 
+        }
+
+        /* Reading Progress Bar */
+        #progress-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 4px;
+            background: transparent; z-index: 1001;
+        }
+        #progress-bar {
+            height: 100%; width: 0%;
+            background: linear-gradient(to right, var(--accent), var(--primary));
+            box-shadow: 0 0 10px var(--primary);
+        }
+
+        /* Navbar */
+        .navbar { position: sticky; top: 0; background: rgba(5, 12, 26, 0.85); backdrop-filter: blur(15px); border-bottom: 1px solid var(--border); z-index: 1000; }
+        .nav-container { max-width: 1000px; margin: auto; padding: 1rem 2rem; display: flex; justify-content: space-between; align-items: center; }
+        .brand { text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .brand h2 { font-size: 1.4rem; font-weight: 800; color: var(--primary); }
+        .back-home { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
+        .back-home:hover { color: var(--primary); transform: translateX(-5px); }
+
+        /* Post Header */
+        .post-header {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            background: radial-gradient(circle at top, #0a192f 0%, #050c1a 100%);
+            position: relative;
+        }
+        .post-header::before {
+            content: ''; position: absolute; inset: 0;
+            background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+            background-size: 50px 50px; opacity: 0.1;
+        }
+
+        .container-narrow { max-width: 800px; margin: auto; padding: 0 1.5rem; position: relative; z-index: 2; }
+        
+        .card-tag { 
+            display: inline-block; padding: 5px 15px; border-radius: 30px;
+            font-size: 0.75rem; font-weight: 700; text-transform: uppercase;
+            border: 1px solid var(--primary); color: var(--primary);
+            background: rgba(59, 130, 246, 0.05); margin-bottom: 1.5rem;
+        }
+
+        .post-header h1 { 
+            font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 800; line-height: 1.2;
+            background: linear-gradient(to right, #fff, #93c5fd);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-info { color: var(--text-muted); font-size: 0.95rem; font-weight: 500; }
+        .meta-info span { color: var(--primary); margin: 0 10px; }
+
+        /* Post Content */
+        .post-content { padding: 4rem 0; font-size: 1.15rem; color: #ccd6f6; }
+        .post-content p { margin-bottom: 2rem; }
+        .post-content b { color: var(--primary); font-weight: 600; }
+        
+        .post-content h3 { 
+            color: #fff; font-size: 1.8rem; margin: 3rem 0 1.5rem;
+            display: flex; align-items: center; gap: 15px;
+        }
+        .post-content h3::before {
+            content: ''; width: 30px; height: 2px; background: var(--primary); display: inline-block;
+        }
+
+        .post-img-wrapper {
+            margin: 3rem 0; border-radius: 20px;
+            overflow: hidden; border: 1px solid var(--border);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .post-img { width: 100%; display: block; transition: 0.5s; }
+        .post-img-wrapper:hover .post-img { transform: scale(1.03); }
+        .img-caption { 
+            text-align: center; margin-top: 1rem; color: var(--text-muted); 
+            font-size: 0.9rem; font-style: italic; 
+        }
+
+        ul { margin-bottom: 2rem; padding-left: 1.5rem; }
+        li { margin-bottom: 1rem; position: relative; list-style: none; }
+        li::before {
+            content: '▹'; position: absolute; left: -1.5rem; color: var(--primary);
+        }
+
+        blockquote {
+            background: var(--bg-card);
+            border-left: 4px solid var(--primary);
+            padding: 2.5rem; margin: 3rem 0;
+            border-radius: 0 20px 20px 0;
+            font-style: italic; font-size: 1.25rem; color: var(--text-main);
+            position: relative;
+        }
+
+        /* Post Conclusion */
+        .post-conclusion {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.05) 0%, transparent 100%);
+            padding: 3rem; border-radius: 20px;
+            border: 1px solid var(--border); margin-top: 5rem;
+        }
+        
+        .btn-back {
+            display: inline-block; margin-top: 3rem; padding: 1rem 2.5rem;
+            border: 1px solid var(--primary); color: var(--primary);
+            text-decoration: none; border-radius: 12px; font-weight: 700;
+            transition: var(--transition);
+        }
+        .btn-back:hover {
+            background: var(--primary); color: var(--bg-body);
+            box-shadow: 0 0 25px rgba(59, 130, 246, 0.3);
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        footer { background: #030812; padding: 4rem; text-align: center; border-top: 1px solid var(--border); margin-top: 6rem; }
+        .footer-copy { font-size: 0.85rem; color: var(--text-muted); margin-top: 10px; }
+
+        @media (max-width: 768px) {
+            .post-header { padding: 6rem 0 3rem; }
+            .post-content { font-size: 1.05rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="progress-container"><div id="progress-bar"></div></div>
+
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="brand">
+                <h2>MyMiniCloud</h2>
+            </a>
+            <a href="/" class="back-home">← Quay lại trang chủ</a>
+        </div>
+    </nav>
+
+    <header class="post-header">
+        <div class="container-narrow">
+            <span class="card-tag" data-aos="fade-down">DevOps & Cloud</span>
+            <h1 data-aos="zoom-out" data-aos-delay="200">Hành trình làm chủ Cloud Native & Docker</h1>
+            <div class="meta-info" data-aos="fade-up" data-aos-delay="400">
+                05 Tháng 4, 2026 <span>•</span> Tác giả: Trương Anh Tuấn
+            </div>
+        </div>
+    </header>
+
+    <main class="container-narrow">
+        <article class="post-content">
+            <p data-aos="fade-up">Trong kỷ nguyên chuyển đổi số, **Cloud Native** không chỉ là một thuật ngữ công nghệ mà là một cuộc cách mạng trong cách chúng ta xây dựng và vận hành ứng dụng trên nền tảng điện toán đám mây.</p>
+
+            <div class="post-img-wrapper" data-aos="fade-up">
+                <img src="/images/blog3-image1.jpg" class="post-img" alt="Docker and Cloud Infrastructure">
+            </div>
+            <p class="img-caption">Hình 1: Hệ sinh thái Containerization và điều phối hạ tầng.</p>
+
+            <h3 data-aos="fade-right">1. Tại sao phải là Containerization?</h3>
+            <p data-aos="fade-up">Trước đây, việc triển khai phần mềm thường gặp lỗi "it works on my machine". Docker đã giải quyết triệt để vấn đề này bằng cách đóng gói ứng dụng cùng toàn bộ môi trường thực thi của nó vào một **Container** duy nhất.</p>
+            <ul data-aos="fade-up">
+                <li><b>Nhẹ nhàng:</b> Các container chia sẻ nhân OS, giúp khởi động trong vài giây thay vì vài phút như VM.</li>
+                <li><b>Nhất quán:</b> Đảm bảo môi trường chạy giống hệt nhau từ Development đến Production.</li>
+                <li><b>Isolation:</b> Mỗi dịch vụ chạy biệt lập, tăng tính bảo mật và ổn định cho toàn hệ thống MyMiniCloud.</li>
+            </ul>
+
+            <h3 data-aos="fade-right">2. Kiến trúc Microservices và Docker Compose</h3>
+            <p data-aos="fade-up">Dự án MyMiniCloud của chúng tôi sử dụng Docker Compose để quản lý hàng chục dịch vụ đồng thời:</p>
+            <ul data-aos="fade-up">
+                <li><b>Frontend & Backend:</b> Được tách rời để mở rộng độc lập.</li>
+                <li><b>Monitoring Stack:</b> Prometheus và Grafana giúp theo dõi "sức khỏe" của hạ tầng 24/7.</li>
+                <li><b>Storage:</b> MinIO và MariaDB được cấu hình với Volume để đảm bảo an toàn dữ liệu.</li>
+            </ul>
+
+            <blockquote data-aos="flip-up">
+                "Docker không thay thế máy ảo, nó thay thế cách chúng ta nghĩ về việc phân phối phần mềm."
+            </blockquote>
+
+            <h3 data-aos="fade-right">3. Triển khai tại TDTU</h3>
+            <p data-aos="fade-up">Thông qua học phần Điện toán đám mây tại Đại học Tôn Đức Thắng, chúng tôi đã triển khai thành công mô hình **myminicloud-infrastructure** với khoảng 10 container khởi động mượt mà, sẵn sàng phục vụ các kịch bản tải lớn.</p>
+
+            <section class="post-conclusion" data-aos="fade-up">
+                <p><b>Kết luận:</b> Làm chủ Docker là bước chân đầu tiên và quan trọng nhất để tiến tới thế giới của Kubernetes và DevOps chuyên nghiệp. Với MyMiniCloud, chúng tôi đang từng bước xây dựng một môi trường Cloud hiện đại và bền vững.</p>
+            </section>
+
+            <div style="text-align: center;">
+                <a href="/" class="btn-back">Quay lại danh sách bài viết</a>
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        <div class="footer-info">MyMiniCloud - N25 | MSSV: 52300063 - 52300066 - 52300080</div>
+        <div class="footer-copy">© 2026 Ton Duc Thang University - Faculty of Information Technology</div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 1000, once: true });
+
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progress-bar").style.width = scrolled + "%";
+        };
+    </script>
+</body>
+</html>
