@@ -1,11 +1,13 @@
 from flask import Flask, jsonify, request
-import time, requests, os
+import time, requests, os, json
 from jose import jwt
 
+# Cấu hình OIDC (OpenID Connect)
 ISSUER   = os.getenv("OIDC_ISSUER",   "http://authentication-identity-server:8080/realms/master")
 AUDIENCE = os.getenv("OIDC_AUDIENCE", "myapp")
 JWKS_URL = f"{ISSUER}/protocol/openid-connect/certs"
 
+# Lấy và cache JSON Web Key Set (JWKS) từ Identity Server để xác thực Token
 _JWKS = None; _TS = 0
 def get_jwks():
     global _JWKS, _TS
@@ -17,9 +19,26 @@ def get_jwks():
 
 app = Flask(__name__)
 
+# API 1: Kiểm tra trạng thái Server
 @app.get("/hello")
 def hello(): return jsonify(message="Hello from App Server!")
 
+# API 2: Lấy danh sách sinh viên (Yêu cầu mở rộng)
+@app.get("/student")
+def student():
+    """
+    API endpoint trả về danh sách sinh viên từ file tĩnh JSON.
+    Minh chứng khả năng quản lý dữ liệu và trả về định dạng chuẩn REST API.
+    """
+    try:
+        # Mở và đọc file students.json với định dạng utf-8 để tránh lỗi font tiếng Việt
+        with open("students.json", "r", encoding="utf-8") as f:
+            data = json.load(f)
+        return jsonify(data)
+    except FileNotFoundError:
+        return jsonify(error="File students.json not found"), 404
+
+# API 3: Tài nguyên bảo mật (Yêu cầu xác thực Token)
 @app.get("/secure")
 def secure():
     auth = request.headers.get("Authorization","")
