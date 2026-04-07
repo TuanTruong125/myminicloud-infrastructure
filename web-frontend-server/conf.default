@@ -1,15 +1,37 @@
 server {
-  listen 80;
-  server_name _;
+    listen 80;
+    server_name _;
 
-  root /usr/share/nginx/html;
-  index index.html;
-
-  location / { try_files $uri $uri/ =404; }
-
-  location ^~ /blog/ {
-    alias /usr/share/nginx/html/blog/;
+    # Thư mục gốc chứa trang chủ
+    root /usr/share/nginx/html;
     index index.html;
-    autoindex off;
-  }
+
+    # Cấu hình MIME types
+    include /etc/nginx/mime.types;
+
+    # Cấu hình cho trang chủ và các tài nguyên tĩnh (CSS, Images)
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Yêu cầu mở rộng 1: Cấu hình Alias cho Blog cá nhân
+    # ^~ giúp ưu tiên khớp đường dẫn /blog/ chính xác
+    location ^~ /blog/ {
+        alias /usr/share/nginx/html/blog/;
+        index index.html;
+        autoindex off;
+    }
+
+    # Đảm bảo trình duyệt nhận đúng loại tệp tin
+    location ~* \.(css|js|jpg|jpeg|png|gif|ico|svg)$ {
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+    }
+
+    # Trang báo lỗi tùy chỉnh
+    error_page 404 /404.html;
+    location = /404.html {
+        root /usr/share/nginx/html;
+        internal;
+    }
 }
