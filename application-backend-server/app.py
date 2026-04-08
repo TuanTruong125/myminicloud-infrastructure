@@ -6,7 +6,8 @@ import mysql.connector
 # Cấu hình OIDC (OpenID Connect)
 ISSUER   = os.getenv("OIDC_ISSUER",   "http://authentication-identity-server:8080/realms/master")
 AUDIENCE = os.getenv("OIDC_AUDIENCE", "myapp")
-JWKS_URL = f"{ISSUER}/protocol/openid-connect/certs"
+JWKS_URL = os.getenv("OIDC_JWKS_URL", f"{ISSUER}/protocol/openid-connect/certs")
+TOKEN_ENDPOINT = f"{ISSUER}/protocol/openid-connect/token"
 
 # Cấu hình Database
 db_config = {
@@ -28,9 +29,29 @@ def get_jwks():
 
 app = Flask(__name__)
 
+def audience_matches(payload):
+    aud = payload.get("aud")
+    azp = payload.get("azp")
+    if isinstance(aud, list) and AUDIENCE in aud:
+        return True
+    if isinstance(aud, str) and aud == AUDIENCE:
+        return True
+    # Keycloak often sets authorized party (azp) to client_id.
+    if azp == AUDIENCE:
+        return True
+    return False
+
 # API 1: Kiểm tra trạng thái Server
 @app.get("/hello")
 def hello(): return jsonify(message="Hello from App Server!")
+
+@app.get("/oidc-info")
+def oidc_info():
+    return jsonify(
+        issuer=ISSUER,
+        token_endpoint=TOKEN_ENDPOINT,
+        audience=AUDIENCE
+    )
 
 # API 2: Lấy danh sách sinh viên (Yêu cầu mở rộng)
 @app.get("/student")
@@ -127,7 +148,15 @@ def secure():
         return jsonify(error="Missing Bearer token"), 401
     token = auth.split(" ",1)[1]
     try:
-        payload = jwt.decode(token, get_jwks(), algorithms=["RS256"], audience=AUDIENCE, issuer=ISSUER)
+        payload = jwt.decode(
+            token,
+            get_jwks(),
+            algorithms=["RS256"],
+            issuer=ISSUER,
+            options={"verify_aud": False}
+        )
+        if not audience_matches(payload):
+            return jsonify(error="Invalid token audience/client"), 401
         return jsonify(message="Secure resource OK", preferred_username=payload.get("preferred_username"))
     except Exception as e:
         return jsonify(error=str(e)), 401
