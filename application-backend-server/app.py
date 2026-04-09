@@ -46,6 +46,7 @@ def audience_matches(payload):
 @app.get("/hello")
 def hello(): return jsonify(message="Hello from App Server!")
 
+# API 2: Cung cấp thông tin OIDC cho client (Yêu cầu mở rộng)
 @app.get("/oidc-info")
 def oidc_info():
     return jsonify(
@@ -54,7 +55,7 @@ def oidc_info():
         audience=AUDIENCE
     )
 
-# API 2: Lấy danh sách sinh viên (Yêu cầu mở rộng)
+# API 3: Lấy danh sách sinh viên (Yêu cầu mở rộng)
 @app.get("/student")
 def student():
     try:
@@ -65,7 +66,7 @@ def student():
     except FileNotFoundError:
         return jsonify(error="File students.json not found"), 404
     
-# API 3: Quản trị danh sách sinh viên từ MariaDB - Full CRUD (Yêu cầu mở rộng)
+# API 4: Quản trị danh sách sinh viên từ MariaDB - Full CRUD (Yêu cầu mở rộng)
 @app.route("/students-db", methods=["GET", "POST"])
 def manage_students_db():
     conn = mysql.connector.connect(**db_config)
@@ -88,7 +89,7 @@ def manage_students_db():
         cursor.close(); conn.close()
         return jsonify(message="Student added successfully!"), 201
 
-# API 3.1: CẬP NHẬT & XÓA theo ID
+# API 4.1: CẬP NHẬT & XÓA theo ID
 @app.route("/students-db/<int:id>", methods=["PUT", "DELETE"])
 def update_delete_student(id):
     try:
@@ -141,7 +142,7 @@ def update_delete_student(id):
     except Exception as e:
         return jsonify(error=str(e)), 500
 
-# API 4: Tài nguyên bảo mật (Yêu cầu xác thực Token)
+# API 5: Tài nguyên bảo mật (Yêu cầu xác thực Token)
 @app.get("/secure")
 def secure():
     auth = request.headers.get("Authorization","")
