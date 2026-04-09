@@ -19,8 +19,10 @@ services:
     networks: [cloud-net]
     ports: [ "8085:8081" ]
     environment:
-      OIDC_ISSUER: "http://authentication-identity-server:8080/realms/master"
-      OIDC_AUDIENCE: "myapp"
+      OIDC_ISSUER: "http://localhost:8081/realms/realm_52300063"
+      OIDC_AUDIENCE: "flask-app"
+      OIDC_JWKS_URL: "http://authentication-identity-server:8080/realms/realm_52300063/protocol/openid-connect/certs"
+
 
   # 3. Relational Database Server
   relational-database-server:
@@ -39,13 +41,15 @@ services:
   authentication-identity-server:
     image: quay.io/keycloak/keycloak:latest
     container_name: authentication-identity-server
-    command: ["start-dev"]
+    command: ["start-dev", "--import-realm"]
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: admin
       KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_HOSTNAME: "localhost"
       KC_HOSTNAME_STRICT: "false"
       KC_HTTP_ENABLED: "true"
+    volumes:
+      - ./authentication-identity-server/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     ports: [ "8081:8080" ]
     restart: unless-stopped
     networks: [cloud-net]
