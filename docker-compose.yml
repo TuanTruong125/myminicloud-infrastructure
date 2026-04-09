@@ -43,11 +43,11 @@ services:
     container_name: authentication-identity-server
     command: ["start-dev", "--import-realm"]
     environment:
-        KC_BOOTSTRAP_ADMIN_USERNAME: admin
-        KC_BOOTSTRAP_ADMIN_PASSWORD: admin
-        KC_HOSTNAME: "localhost"
-        KC_HOSTNAME_STRICT: "false"
-        KC_HTTP_ENABLED: "true"
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
+      KC_HOSTNAME: "localhost"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HTTP_ENABLED: "true"
     volumes:
       - ./authentication-identity-server/realm-export.json:/opt/keycloak/data/import/realm-export.json:ro
     ports: [ "8081:8080" ]
@@ -75,6 +75,7 @@ services:
     container_name: internal-dns-server
     ports: [ "1053:53/udp" ]
     volumes:
+      - ./internal-dns-server/named.conf:/etc/bind/named.conf:ro
       - ./internal-dns-server/named.conf.options:/etc/bind/named.conf.options:ro
       - ./internal-dns-server/named.conf.local:/etc/bind/named.conf.local:ro
       - ./internal-dns-server/db.cloud.local:/etc/bind/db.cloud.local:ro
