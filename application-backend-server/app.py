@@ -29,6 +29,7 @@ def get_jwks():
 
 app = Flask(__name__)
 
+# Kiểm tra xem audience trong token có khớp với audience của ứng dụng không
 def audience_matches(payload):
     aud = payload.get("aud")
     azp = payload.get("azp")
@@ -36,7 +37,7 @@ def audience_matches(payload):
         return True
     if isinstance(aud, str) and aud == AUDIENCE:
         return True
-    # Keycloak often sets authorized party (azp) to client_id.
+    # Keycloak thường đặt authorized party (azp) thành client_id.
     if azp == AUDIENCE:
         return True
     return False
