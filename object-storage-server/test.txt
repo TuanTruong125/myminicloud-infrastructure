@@ -1,0 +1,56 @@
+1. Test object public của bucket profile-pics
+
+Method: GET
+URL: http://localhost:9000/profile-pics/avatar.jpg
+Không cần Authorization
+Kết quả đúng: 200 OK và thấy ảnh trả về
+Đây là cách xác nhận bucket đã được set public download policy.
+
+2. Test bucket documents là private
+
+Method: GET
+URL: http://localhost:9000/documents/report.pdf
+Không cần Authorization
+Kết quả đúng: 403 Forbidden
+Nếu ra 403, nghĩa là policy private đang hoạt động đúng.
+
+3. Test upload file vào MinIO bằng Postman
+Vì MinIO dùng S3 API, bạn phải dùng AWS Signature trong Postman.
+
+Method: PUT
+URL: http://localhost:9000/profile-pics/avatar.jpg
+Hoặc: http://localhost:9000/documents/report.pdf
+Tab Authorization:
+Type: AWS Signature
+AccessKey: minioadmin
+SecretKey: minioadmin
+AWS Region: us-east-1
+Service Name: s3
+Tab Body:
+Chọn binary
+Chọn file cần upload
+Send
+
+
+Nếu muốn tạo bucket bằng Postman:
+
+Method: PUT
+URL: http://localhost:9000/profile-pics
+Authorization: AWS Signature
+Send
+
+
+Lưu ý:
+
+Nếu bucket đã được bootstrap tạo sẵn thì không cần tạo lại.
+File avatar.jpg và report.pdf hiện đã được upload tự động bởi init-minio.sh, nên Postman chủ yếu dùng để verify lại.
+
+4. Kiểm tra trên MinIO Console
+
+Mở: http://localhost:9001
+Login:
+Username: minioadmin
+Password: minioadmin
+Vào bucket:
+profile-pics để thấy avatar.jpg
+documents để thấy report.pdf
