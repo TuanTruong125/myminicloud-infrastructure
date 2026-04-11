@@ -112,7 +112,12 @@ services:
   monitoring-grafana-dashboard-server:
     image: grafana/grafana:latest
     container_name: monitoring-grafana-dashboard-server
+    depends_on:
+      - monitoring-prometheus-server
     ports: [ "3000:3000" ]
+    volumes:
+      - ./monitoring-grafana-dashboard-server/provisioning:/etc/grafana/provisioning:ro
+      - ./monitoring-grafana-dashboard-server/dashboards:/var/lib/grafana/dashboards:ro
     networks: [cloud-net]
 
   # 10. API Gateway / Reverse Proxy (Nginx)
