@@ -3,13 +3,28 @@ networks:
     name: cloud-net
 
 services:
-  # 1. Web Server
-  web-frontend-server:
+  # 1. Web Server (instance 1)
+  web-frontend-server1:
     build: ./web-frontend-server
     image: 52300063_52300066_52300080/web:dev
-    container_name: web-frontend-server
-    networks: [cloud-net]
+    container_name: web-frontend-server1
+    networks:
+      cloud-net:
+        aliases:
+          - web-frontend-server
     ports: [ "8080:80" ]
+    volumes:
+      - ./web-frontend-server/conf.instance1:/etc/nginx/conf.d/default.conf:ro
+
+  # 1.1 Web Server (instance 2)
+  web-frontend-server2:
+    build: ./web-frontend-server
+    image: 52300063_52300066_52300080/web:dev
+    container_name: web-frontend-server2
+    networks: [cloud-net]
+    ports: [ "8082:80" ]
+    volumes:
+      - ./web-frontend-server/conf.instance2:/etc/nginx/conf.d/default.conf:ro
 
   # 2. Application Server
   application-backend-server:
@@ -125,7 +140,8 @@ services:
     image: nginx:stable
     container_name: api-gateway-proxy-server
     depends_on:
-      - web-frontend-server
+      - web-frontend-server1
+      - web-frontend-server2
       - application-backend-server
       - authentication-identity-server
     ports: [ "80:80" ]

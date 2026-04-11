@@ -1,0 +1,37 @@
+server {
+    listen 80;
+    server_name _;
+
+    root /usr/share/nginx/html;
+    index index.html;
+
+    include /etc/nginx/mime.types;
+
+    add_header X-Instance "web-frontend-server1" always;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location = /metrics {
+        default_type text/plain;
+        return 200 "web_frontend_up 1\n";
+    }
+
+    location ^~ /blog/ {
+        alias /usr/share/nginx/html/blog/;
+        index index.html;
+        autoindex off;
+    }
+
+    location ~* \.(css|js|jpg|jpeg|png|gif|ico|svg)$ {
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+    }
+
+    error_page 404 /404.html;
+    location = /404.html {
+        root /usr/share/nginx/html;
+        internal;
+    }
+}
