@@ -1,0 +1,43 @@
+Test bằng Postman
+
+Kiểm tra endpoint metrics của web frontend
+Method: GET
+URL: http://localhost:8080/metrics
+Kết quả mong đợi: HTTP 200, body có metric web_frontend_up 1
+
+Kiểm tra Prometheus sống
+Method: GET
+URL: http://localhost:9090/-/healthy
+Kết quả mong đợi: HTTP 200, body Prometheus Server is Healthy.
+
+Kiểm tra danh sách targets
+Method: GET
+URL: http://localhost:9090/api/v1/targets
+Kết quả mong đợi trong JSON:
+job node health up
+job web health up
+target web-frontend-server:80 có scrape URL /metrics
+
+Kiểm tra query metric
+Method: GET
+URL: http://localhost:9090/api/v1/query?query=up
+Kết quả mong đợi:
+up{job="web", ...} = 1
+up{job="node", ...} = 1
+
+Kiểm tra query metric custom web
+Method: GET
+URL: http://localhost:9090/api/v1/query?query=web_frontend_up
+Kết quả mong đợi: value = 1
+Test trên giao diện web
+
+Prometheus Targets page
+Mở: http://localhost:9090/targets
+Xác nhận 2 target đều UP:
+node -> monitoring-node-exporter-server:9100
+web -> web-frontend-server:80
+
+Prometheus Graph
+Mở: http://localhost:9090/graph
+Query web_frontend_up rồi bấm Execute, phải ra 1
+Query up{job="web"} rồi bấm Execute, phải ra 1

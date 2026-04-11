@@ -14,6 +14,12 @@ server {
         try_files $uri $uri/ =404;
     }
 
+    # Expose Prometheus-compatible metrics with explicit text content type.
+    location = /metrics {
+        default_type text/plain;
+        return 200 "web_frontend_up 1\n";
+    }
+
     # Yêu cầu mở rộng 1: Cấu hình Alias cho Blog cá nhân
     # ^~ giúp ưu tiên khớp đường dẫn /blog/ chính xác
     location ^~ /blog/ {
