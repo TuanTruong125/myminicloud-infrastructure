@@ -69,6 +69,17 @@ services:
       - "9001:9001"
     networks: [cloud-net]
 
+  object-storage-bootstrap:
+    image: minio/mc:latest
+    container_name: object-storage-bootstrap
+    depends_on:
+      - object-storage-server
+    volumes:
+      - ./object-storage-server/bootstrap/init-minio.sh:/bootstrap/init-minio.sh:ro
+      - ./object-storage-server/seed:/seed:ro
+    entrypoint: ["/bin/sh", "/bootstrap/init-minio.sh"]
+    networks: [cloud-net]
+
   # 6. Internal DNS Server (Bind9)
   internal-dns-server:
     image: internetsystemsconsortium/bind9:9.18
