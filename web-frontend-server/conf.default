@@ -14,7 +14,13 @@ server {
         try_files $uri $uri/ =404;
     }
 
-    # Yêu cầu mở rộng 1: Cấu hình Alias cho Blog cá nhân
+    # Hiển thị các chỉ số tương thích với Prometheus với kiểu nội dung văn bản rõ ràng
+    location = /metrics {
+        default_type text/plain;
+        return 200 "web_frontend_up 1\n";
+    }
+
+    # Yêu cầu mở rộng: Cấu hình Alias cho Blog cá nhân
     # ^~ giúp ưu tiên khớp đường dẫn /blog/ chính xác
     location ^~ /blog/ {
         alias /usr/share/nginx/html/blog/;
