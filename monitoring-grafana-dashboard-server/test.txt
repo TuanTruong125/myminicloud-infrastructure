@@ -1,0 +1,48 @@
+1. Test bằng Postman
+
+Kiểm tra Grafana đang chạy
+Method: GET
+URL: http://localhost:3000/api/health
+Auth: không cần
+Kỳ vọng: JSON có database: "ok".
+Kiểm tra datasource Prometheus đã được provision
+Method: GET
+URL: http://localhost:3000/api/datasources
+Auth: Basic Auth
+Username: admin
+Password: admin (hoặc mật khẩu bạn đã đổi)
+Kỳ vọng:
+Có datasource tên Prometheus
+uid là prometheus
+url là http://monitoring-prometheus-server:9090
+Kiểm tra dashboard đã được nạp
+Method: GET
+URL: http://localhost:3000/api/search?query=System%20Health%20of%2052300063_52300066_52300080
+Auth: Basic Auth
+Kỳ vọng:
+Có kết quả dashboard
+title đúng: System Health of 52300063_52300066_52300080
+uid đúng: system-health-52300063
+Kiểm tra chi tiết dashboard JSON từ Grafana
+Method: GET
+URL: http://localhost:3000/api/dashboards/uid/system-health-52300063
+Auth: Basic Auth
+Kỳ vọng:
+Có 3 panel title:
+CPU Usage (%)
+Memory Usage
+Network Traffic
+2. Test trên giao diện web
+
+Mở Grafana
+http://localhost:3000
+Login admin/admin (nếu chưa đổi)
+Kiểm tra datasource
+Vào Connections -> Data sources
+Kỳ vọng: thấy Prometheus, nhấn Save & Test ra Data source is working
+Kiểm tra dashboard
+Vào Dashboards
+Mở dashboard System Health of 52300063_52300066_52300080
+Kỳ vọng:
+Có đủ 3 panel CPU/Memory/Network
+Panel có dữ liệu (không báo “No data”)

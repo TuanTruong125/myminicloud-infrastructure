@@ -1,0 +1,19 @@
+Cách test bằng Postman:
+
+Method: GET
+URL: http://localhost/student/
+Không cần Authorization
+Kết quả mong đợi: trả về JSON danh sách sinh viên từ backend, giống dữ liệu trong /student của app backend
+Nếu muốn đối chiếu thêm:
+
+Gọi trực tiếp backend: http://localhost:8085/student
+Gọi qua gateway: http://localhost/student/
+Hai kết quả phải giống nhau, chỉ khác đường đi qua proxy
+Cách test trên giao diện web:
+
+Mở trình duyệt
+Truy cập: http://localhost/student/
+Nếu route đúng, trình duyệt sẽ hiển thị JSON danh sách sinh viên
+Nếu muốn xem proxy có hoạt động với các route khác, bạn cũng có thể thử:
+http://localhost/
+http://localhost/api/hello
