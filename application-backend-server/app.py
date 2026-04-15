@@ -37,7 +37,7 @@ def audience_matches(payload):
         return True
     if isinstance(aud, str) and aud == AUDIENCE:
         return True
-    # Keycloak thường đặt authorized party (azp) thành client_id.
+    # Keycloak thường đặt authorized party (azp) thành client_id
     if azp == AUDIENCE:
         return True
     return False

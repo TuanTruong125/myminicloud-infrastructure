@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS students (
     major VARCHAR(50)
 );
 
--- Chèn ít nhất 3 bản ghi mẫu (Insert)
+-- Chèn ít nhất 3 bản ghi mẫu (INSERT)
 INSERT INTO students (student_id, fullname, dob, major) VALUES 
 ('52300063', 'Phan Nguyen Quoc Thang', '2005-01-01', 'Software Engineering'),
 ('52300066', 'Nguyen Hoang Nhut Thien', '2005-07-22', 'Computer Science'),
