@@ -5,6 +5,7 @@ Method: GET
 URL: http://localhost:3000/api/health
 Auth: không cần
 Kỳ vọng: JSON có database: "ok".
+
 Kiểm tra datasource Prometheus đã được provision
 Method: GET
 URL: http://localhost:3000/api/datasources
@@ -15,6 +16,7 @@ Kỳ vọng:
 Có datasource tên Prometheus
 uid là prometheus
 url là http://monitoring-prometheus-server:9090
+
 Kiểm tra dashboard đã được nạp
 Method: GET
 URL: http://localhost:3000/api/search?query=System%20Health%20of%2052300063_52300066_52300080
@@ -23,6 +25,7 @@ Kỳ vọng:
 Có kết quả dashboard
 title đúng: System Health of 52300063_52300066_52300080
 uid đúng: system-health-52300063
+
 Kiểm tra chi tiết dashboard JSON từ Grafana
 Method: GET
 URL: http://localhost:3000/api/dashboards/uid/system-health-52300063
