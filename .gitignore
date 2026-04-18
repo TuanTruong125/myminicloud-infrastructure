@@ -52,3 +52,6 @@ docker-compose.override.yml
 Dockerfile.*.bak
 *.tar
 *.image
+
+# AWS Configuration
+docker-compose-aws.yml
