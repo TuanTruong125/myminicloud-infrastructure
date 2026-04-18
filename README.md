@@ -32,7 +32,8 @@ All services run in separate containers and communicate through the internal net
 - **Reverse Proxy & Load Balancer**: Nginx
 
 ## Project Directory Structure
-MYMINICLOUD-INFRASTRUCTURE/
+```text
+myminicloud-infrastructure/
 ├── docker-compose.yml
 ├── docker-compose-aws.yml
 ├── docker-compose-aws.example.yml
@@ -49,6 +50,7 @@ MYMINICLOUD-INFRASTRUCTURE/
 ├── monitoring-node-exporter-server/
 ├── api-gateway-proxy-server/
 └── scripts/
+```
 
 ## Main Ports (Lab Specification)
 
@@ -128,7 +130,8 @@ Tất cả các service chạy trong container riêng biệt, giao tiếp qua m�
 - **Reverse Proxy & Load Balancer**: Nginx
 
 ## Cấu trúc thư mục dự án
-MYMINICLOUD-INFRASTRUCTURE/
+```text
+myminicloud-infrastructure/
 ├── docker-compose.yml
 ├── docker-compose-aws.yml
 ├── docker-compose-aws.example.yml
@@ -145,6 +148,7 @@ MYMINICLOUD-INFRASTRUCTURE/
 ├── monitoring-node-exporter-server/
 ├── api-gateway-proxy-server/
 └── scripts/
+```
 
 ## Ports chính (theo lab)
 
