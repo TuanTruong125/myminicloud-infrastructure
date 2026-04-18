@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Lost in Cloud | MyMiniCloud</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-body: #050c1a;
+            --primary: #64ffda;
+            --accent: #2563eb;
+            --text-main: #e6f1ff;
+            --text-muted: #8892b0;
+            --border: #1e2d4d;
+            --transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: var(--bg-body); 
+            color: var(--text-main); 
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* Background Gradient */
+        body::before {
+            content: ''; position: absolute; inset: 0;
+            background: radial-gradient(circle at 50% 50%, #112240 0%, #050c1a 100%);
+            z-index: -1;
+        }
+
+        .nebula {
+            position: absolute; width: 300px; height: 300px;
+            background: var(--accent); filter: blur(150px);
+            opacity: 0.1; border-radius: 50%; z-index: -1;
+            animation: move 15s infinite alternate;
+        }
+
+        @keyframes move {
+            from { transform: translate(-30%, -30%); }
+            to { transform: translate(30%, 30%); }
+        }
+
+        /* Error Wrapper */
+        .error-container { 
+            text-align: center; 
+            padding: 1rem; 
+            z-index: 2;
+            max-width: 600px;
+        }
+
+        .error-code {
+            font-size: clamp(4rem, 10vw, 6rem);
+            font-weight: 800;
+            line-height: 1;
+            background: linear-gradient(to bottom, #fff, var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 20px rgba(37, 99, 235, 0.2));
+            margin-bottom: 0.5rem;
+            letter-spacing: -1px;
+        }
+
+        /* Illustration Box */
+        .img-box { 
+            margin-bottom: 2rem;
+        }
+
+        .error-img {
+            max-width: 280px;
+            width: 100%;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.4));
+            animation: floating 4s ease-in-out infinite;
+        }
+
+        @keyframes floating {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        /* Typography */
+        h3 { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            margin-bottom: 0.8rem; 
+            color: #fff; 
+        }
+        
+        p { 
+            color: var(--text-muted); 
+            font-size: 1rem; 
+            margin-bottom: 2rem; 
+            line-height: 1.5; 
+        }
+
+        /* Navigation Button */
+        .btn-home {
+            display: inline-block;
+            padding: 0.9rem 2.5rem;
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .btn-home:hover {
+            background: var(--primary);
+            color: var(--bg-body);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(100, 255, 218, 0.2);
+        }
+
+        @media (max-width: 480px) {
+            .error-code { font-size: 3.5rem; }
+            h3 { font-size: 1.2rem; }
+            .error-img { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nebula"></div>
+
+    <div class="error-container">
+        <div class="img-box" data-aos="zoom-in">
+            <h1 class="error-code">404</h1>
+            <img src="/images/404-illustration.png" alt="Lost in Space" class="error-img">
+        </div>
+        
+        <div data-aos="fade-up" data-aos-delay="200">
+            <h3>Úi! Bạn đang lạc giữa các tầng Mây...</h3>
+            <p>
+                Trang bạn đang tìm kiếm không tồn tại hoặc đã được di chuyển sang một <b>Cluster</b> khác trong hệ thống <b>MyMiniCloud</b>.
+            </p>
+
+            <a href="/" class="btn-home">
+                QUAY LẠI
+            </a>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({ duration: 800, once: true });
+    </script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+server {
+    listen 80;
+    server_name _;
+
+    # Thư mục gốc chứa trang chủ
+    root /usr/share/nginx/html;
+    index index.html;
+
+    # Cấu hình MIME types
+    include /etc/nginx/mime.types;
+
+    # Cấu hình cho trang chủ và các tài nguyên tĩnh (CSS, Images)
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    # Hiển thị các chỉ số tương thích với Prometheus với kiểu nội dung văn bản rõ ràng
+    location = /metrics {
+        default_type text/plain;
+        return 200 "web_frontend_up 1\n";
+    }
+
+    # Yêu cầu mở rộng: Cấu hình Alias cho Blog cá nhân
+    # ^~ giúp ưu tiên khớp đường dẫn /blog/ chính xác
+    location ^~ /blog/ {
+        alias /usr/share/nginx/html/blog/;
+        index index.html;
+        autoindex off;
+    }
+
+    # Đảm bảo trình duyệt nhận đúng loại tệp tin
+    location ~* \.(css|js|jpg|jpeg|png|gif|ico|svg)$ {
+        expires 30d;
+        add_header Cache-Control "public, no-transform";
+    }
+
+    # Trang báo lỗi tùy chỉnh
+    error_page 404 /404.html;
+    location = /404.html {
+        root /usr/share/nginx/html;
+        internal;
+    }
+}

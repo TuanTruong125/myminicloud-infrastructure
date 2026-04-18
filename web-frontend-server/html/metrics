@@ -1,0 +1,3 @@
+# HELP web_frontend_up Web frontend health status.
+# TYPE web_frontend_up gauge
+web_frontend_up 1

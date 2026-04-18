@@ -1,0 +1,32 @@
+[
+  {
+    "id": "52300063",
+    "name": "Phan Nguyen Quoc Thang",
+    "major": "Software Engineering",
+    "gpa": 3.6
+  },
+  {
+    "id": "52300066",
+    "name": "Nguyen Hoang Nhut Thien",
+    "major": "Computer Science",
+    "gpa": 3.6
+  },
+  {
+    "id": "52300080",
+    "name": "Truong Anh Tuan",
+    "major": "Data Science",
+    "gpa": 3.6
+  },
+  {
+    "id": "52300001",
+    "name": "Nguyen Van A",
+    "major": "Software Engineering",
+    "gpa": 2.9
+  },
+  {
+    "id": "523000018",
+    "name": "Pham Thi B",
+    "major": "Computer Science",
+    "gpa": 3.3
+  }
+]
